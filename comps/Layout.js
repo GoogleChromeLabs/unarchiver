@@ -11,6 +11,11 @@ export default function Layout(props) {
     <div style={layoutStyle}>
       <Header />
       {props.children}
+      <style jsx>{`
+        div,a,button,span {
+          font-family: 'Roboto',arial,sans-serif;
+        }
+      `}</style>
     </div>
   )
 }

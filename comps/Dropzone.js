@@ -7,37 +7,6 @@ const compStyle = {
   flexDirection: 'row',
 }
 
-const dropZoneStyle = {
-  margin: 5,
-  padding: 5,
-  fontSize: 24,
-  border: 'solid 1px #dddddd',
-  backgroundColor: '#dddddd',
-  borderRadius: '0.25em',
-  cursor: 'pointer',
-  minWidth: '500px',
-  boxShadow: '#cccccc 2px 2px'
-}
-
-const dropZoneStyleOnDragActive = {
-  margin: 5,
-  padding: 5,
-  fontSize: 24,
-  border: 'dashed 1px #aaaaaa',
-  backgroundColor: '#eeeeee',
-  borderRadius: '0.25em',
-  cursor: 'grabbing',
-  minWidth: '500px'
-}
-
-const fileNameStyle = {
-  margin: 5,
-  padding: 5,
-  fontSize: 24,
-  backgroundColor: 'rgb(192, 255, 176)',
-  borderRadius: '0.25em'
-}
-
 export default function Dropzone() {
   const onDrop = useCallback(async acceptedFiles => {
     try {
@@ -85,19 +54,47 @@ export default function Dropzone() {
 
   return (
     <div style={compStyle}>
-      <div {...getRootProps()} style={isDragActive ? dropZoneStyleOnDragActive : dropZoneStyle }>
+      <div {...getRootProps()} className={"dropZone" + (isDragActive ? "  dragActive" : "") }>
       <input {...getInputProps()} />
-      {
-        isDragActive ?
-          <span>Drop the file here!</span> :
-          <span>Click to select a file, or drag-and-drop here.</span>
-      }
+      <span>{
+        isDragActive ? "Drop the file here!": "Click to select a file, or drag-and-drop here."
+      }</span>
       </div>
       {acceptedFiles.length == 1 ? (
-        <div style={fileNameStyle}>
+        <div className="selectedFile">
           {acceptedFiles[0].name}
         </div>
       ) : ''}
+      <style jsx>{`
+        .dropZone {
+          margin: 5px;
+          padding: 5px;
+          font-size: 24px;
+          text-align: center;
+          border: solid 1px #dddddd;
+          background-color: #dddddd;
+          border-radius: 0.25em;
+          cursor: pointer;
+          min-width: 500px;
+          box-shadow: #cccccc 2px 2px;
+        }
+        .dropZone.dragActive {
+          border: dashed 1px #aaaaaa;
+          background-color: #eeeeee;
+          cursor: grabbing;
+          border-radius: 0;
+          box-shadow: 0px 0px;
+        }
+        .selectedFile {
+          margin: 5px;
+          padding: 5px;
+          font-size: 24px;
+          text-align: center;
+          background-color: rgb(192, 255, 176);
+          border-radius: 0.25em;
+          flex-grow: 2;
+        }
+      `}</style>
     </div>
   );
 }
