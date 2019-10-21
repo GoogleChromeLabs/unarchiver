@@ -5,6 +5,7 @@ import JSZip from 'jszip';
 const compStyle = {
   display: 'flex',
   flexDirection: 'row',
+  flexWrap: 'wrap'
 }
 
 export default function Dropzone() {
