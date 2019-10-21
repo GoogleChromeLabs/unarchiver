@@ -1,8 +1,8 @@
 // This is the Link API
-import Link from 'next/link';
 import {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
 import JSZip from 'jszip';
+import Layout from '../comps/Layout.js'
 
 function MyDropzone() {
   const onDrop = useCallback(async acceptedFiles => {
@@ -27,15 +27,13 @@ function MyDropzone() {
 }
 
 const Index = () => (
-  <div>
-    <p>Unarchiver</p>
+  <Layout>
+    <div>
+      <p>Unarchiver</p>
 
-    <MyDropzone/>
-
-    <Link href="/about">
-      <a>About</a>
-    </Link>
-  </div>
+      <MyDropzone/>
+    </div>
+  </Layout>
 );
   
 export default Index;
