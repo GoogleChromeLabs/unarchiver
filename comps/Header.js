@@ -9,7 +9,7 @@ export default function Header() {
   return (
     <div>
       <Head>
-        <link rel="manifest" href="/public/manifest.json" />
+        <link rel="manifest" href="/static/manifest.json" />
       </Head>
       <Link href="/">
         <a style={linkStyle}>Home</a>
