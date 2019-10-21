@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Head from 'next/head'
 
 const linkStyle = {
   marginRight: 15
@@ -7,6 +8,9 @@ const linkStyle = {
 export default function Header() {
   return (
     <div>
+      <Head>
+        <link rel="manifest" href="/public/manifest.json" />
+      </Head>
       <Link href="/">
         <a style={linkStyle}>Home</a>
       </Link>
