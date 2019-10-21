@@ -23,7 +23,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -43,7 +43,7 @@
      id="namedview10"
      showgrid="false"
      inkscape:zoom="0.4609375"
-     inkscape:cx="-66.169492"
+     inkscape:cx="-458.84746"
      inkscape:cy="450.11305"
      inkscape:window-x="0"
      inkscape:window-y="0"
@@ -58,7 +58,7 @@
      d="m 282.98071,236.20572 -0.13885,-42.85164 -21.8231,28.00206 -18.89175,-42.24223 -6.78838,58.97404 -48.82233,-6.74209 26.06583,25.18643 -57.77836,10.90769 55.51043,13.91618 -57.83237,64.76731 80.27259,-44.07818 0.13885,42.92107 21.79996,-28.03292 18.89946,42.28852 6.80381,-59.02033 48.85319,6.75752 -26.06583,-25.171 57.80922,-10.9077 -55.57215,-13.90074 57.80923,-64.79046 z"
      id="path4"
      inkscape:connector-curvature="0"
-     style="fill:#ffffff;stroke-width:7.71406746" />
+     style="fill:#ffff00;stroke-width:7.71406746" />
   <path
      d="m 504.62901,86.82281 -137.34125,153.89564 131.4477,32.85421 -134.34048,25.37157 58.38778,56.42069 -112.52511,-15.58241 -16.00668,140.08746 -44.55646,-99.62718 -49.99487,64.07304 -0.26228,-96.16356 L 11.11383,451.48992 148.45509,297.59427 17.084519,264.69377 151.40186,239.29906 92.990944,182.90923 205.57776,198.49165 221.57674,58.327041 266.0869,158.01593 316.06635,93.90432 316.3672,190.10645 504.65215,86.79195 m -171.56086,203.21939 97.66781,-18.44433 -91.42712,-22.89536 94.71332,-106.09928 -133.83907,73.41478 -0.23143,-75.99899 -37.7295,48.39034 -31.26512,-69.88945 -11.03111,96.62641 -83.60507,-11.5171 46.28441,44.65674 -97.660097,18.44433 91.457987,22.8645 -94.759608,106.14556 133.869928,-73.44563 0.18514,76.02985 37.76036,-48.39035 31.23426,69.88945 11.10054,-96.67269 83.55107,11.57881 -46.28441,-44.67987"
      id="path6"
@@ -76,13 +76,13 @@
        y="523.255" /></text>
   <text
      xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:257.13555908px;line-height:1.25;font-family:Quicksand;-inkscape-font-specification:'Quicksand, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:7.71406746"
-     x="89.723305"
-     y="356.5831"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:373.33334351px;line-height:1.25;font-family:Quicksand;-inkscape-font-specification:'Quicksand, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:7.71406746"
+     x="9.452116"
+     y="393.46445"
      id="text3731"><tspan
        sodipodi:role="line"
        id="tspan3729"
-       x="89.723305"
-       y="356.5831"
-       style="stroke-width:7.71406746">XD</tspan></text>
+       x="9.452116"
+       y="393.46445"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:373.33334351px;font-family:Quicksand;-inkscape-font-specification:'Quicksand, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:7.71406746">XD</tspan></text>
 </svg>
