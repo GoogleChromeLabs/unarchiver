@@ -2,6 +2,27 @@ import {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
 import JSZip from 'jszip';
 
+const dropZoneStyle = {
+  margin: 5,
+  padding: 5,
+  fontSize: 24,
+  border: 'solid 1px #dddddd',
+  backgroundColor: '#dddddd',
+  borderRadius: '0.5em',
+  cursor: 'pointer',
+  boxShadow: '#cccccc 2px 2px',
+}
+
+const dropZoneStyleOnDragActive = {
+  margin: 5,
+  padding: 5,
+  fontSize: 24,
+  border: 'dashed 1px #aaaaaa',
+  backgroundColor: '#eeeeee',
+  borderRadius: '0.5em',
+  cursor: 'grabbing'
+}
+
 export default function Dropzone() {
   const onDrop = useCallback(async acceptedFiles => {
     try {
@@ -32,12 +53,12 @@ export default function Dropzone() {
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
   return (
-    <div {...getRootProps()}>
+    <div {...getRootProps()} style={isDragActive ? dropZoneStyleOnDragActive : dropZoneStyle }>
       <input {...getInputProps()} />
       {
         isDragActive ?
-          <p>Drop the files here...</p> :
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <span>Drop the file here!</span> :
+          <span>Click to select a file, or drag-and-drop here.</span>
       }
     </div>
   );
