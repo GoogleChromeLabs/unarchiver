@@ -2,20 +2,15 @@
 import Link from 'next/link';
 import {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
+import JSZip from 'jszip';
 
 function MyDropzone() {
-  const onDrop = useCallback(acceptedFiles => {
-    const reader = new FileReader();
-
-    reader.onabort = () => console.log('file reading was aborted');
-    reader.onerror = () => console.log('file reading has failed');
-    reader.onload = () => {
-      // Do whatever you want with the file contents
-      const binaryStr = reader.result;
-      console.log(binaryStr);
-    };
-
-    acceptedFiles.forEach(file => reader.readAsArrayBuffer(file));
+  const onDrop = useCallback(async acceptedFiles => {
+    const zip = await JSZip.loadAsync(acceptedFiles[0]);
+    zip.forEach((name, file) => {
+        console.log(name);
+        console.log(file);
+    });
   }, []);
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
