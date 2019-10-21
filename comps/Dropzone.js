@@ -8,11 +8,18 @@ const compStyle = {
   flexWrap: 'wrap'
 }
 
-export default function Dropzone() {
+export default function Dropzone(props) {
   const onDrop = useCallback(async acceptedFiles => {
     try {
+        if (props.dirHandle === '') {
+          console.log("No output directory selected, please select an output directory first");
+          return;
+        }
         const zip = await JSZip.loadAsync(acceptedFiles[0]);
-        const output_dir = await FileSystemDirectoryHandle.getSystemDirectory({ type: "sandbox" });
+        // Uncomment to use the user-selected directory handle:
+        const output_dir = props.dirHandle;
+        // Uncomment to use the spec-provided sandbox folder:
+        // const output_dir = await FileSystemDirectoryHandle.getSystemDirectory({ type: "sandbox" });
         for (const name in zip.files) {
             const path = name.split('/');
             const file_name = path.pop();
@@ -54,7 +61,7 @@ export default function Dropzone() {
         console.error('Failed to load zip file');
         console.error(error);
     }
-  }, []);
+  }, [props.dirHandle]);
   const {getRootProps, getInputProps, isDragActive, isDragReject, acceptedFiles, rejectedFiles} = useDropzone({multiple: false, onDrop});
 
   return (
