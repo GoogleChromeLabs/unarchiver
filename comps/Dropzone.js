@@ -50,7 +50,7 @@ export default function Dropzone() {
         console.error(error);
     }
   }, []);
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({multiple: false, onDrop});
 
   return (
     <div {...getRootProps()} style={isDragActive ? dropZoneStyleOnDragActive : dropZoneStyle }>
