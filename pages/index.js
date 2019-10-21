@@ -3,10 +3,11 @@ import Link from 'next/link';
 
 const Index = () => (
   <div>
+    <p>Unarchiver</p>
+
     <Link href="/about">
-      <a>About Page</a>
+      <a>About</a>
     </Link>
-    <p>Hello Next.js</p>
   </div>
 );
   
