@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "jszip": "^3.2.2",
     "next": "^9.1.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2"
