@@ -33,9 +33,11 @@ export default function Dropzone() {
             // Too bad stream is not a native stream, but instead a node stream
             // with a totally different API...
             let offset = 0;
+            let write_op;
             stream.on('data', async chunk => {
                 stream.pause();
-                await writer.write(offset, chunk);
+                write_op = writer.write(offset, chunk);
+                await write_op;
                 offset += chunk.length;
                 stream.resume();
             });
@@ -43,6 +45,8 @@ export default function Dropzone() {
                 stream.on('error', reject);
                 stream.on('end', resolve);
             });
+            // Make sure the last write operation actually finished.
+            await write_op;
             writer.close();
         };
     } catch (error) {
