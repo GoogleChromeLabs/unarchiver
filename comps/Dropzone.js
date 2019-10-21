@@ -4,24 +4,30 @@ import JSZip from 'jszip';
 
 export default function Dropzone() {
   const onDrop = useCallback(async acceptedFiles => {
-    const zip = await JSZip.loadAsync(acceptedFiles[0]);
-    for (let name in zip.files) {
-        console.log(name);
-        const file = zip.files[name];
+    try {
+        const zip = await JSZip.loadAsync(acceptedFiles[0]);
+        for (let name in zip.files) {
+            console.log(name);
+            const file = zip.files[name];
 
-        // Skip over directories
-        if (file.dir) continue;
+            // Skip over directories
+            if (file.dir) continue;
 
-        const stream = file.nodeStream();
-        // Too bad stream is not a native stream, but instead a node stream
-        // with a totally different API...
-        stream.on('data', chunk => {
-            console.log(chunk);
-        });
-        await new Promise(resolve => {
-            stream.on('end', resolve);
-        });
-    };
+            const stream = file.nodeStream();
+            // Too bad stream is not a native stream, but instead a node stream
+            // with a totally different API...
+            stream.on('data', chunk => {
+                console.log(chunk);
+            });
+            await new Promise((resolve, reject) => {
+                stream.on('error', reject);
+                stream.on('end', resolve);
+            });
+        };
+    } catch (error) {
+        console.error('Failed to load zip file');
+        console.error(error);
+    }
   }, []);
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop});
 
