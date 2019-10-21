@@ -2,15 +2,21 @@ import {useCallback} from 'react';
 import {useDropzone} from 'react-dropzone';
 import JSZip from 'jszip';
 
+const compStyle = {
+  display: 'flex',
+  flexDirection: 'row',
+}
+
 const dropZoneStyle = {
   margin: 5,
   padding: 5,
   fontSize: 24,
   border: 'solid 1px #dddddd',
   backgroundColor: '#dddddd',
-  borderRadius: '0.5em',
+  borderRadius: '0.25em',
   cursor: 'pointer',
-  boxShadow: '#cccccc 2px 2px',
+  minWidth: '500px',
+  boxShadow: '#cccccc 2px 2px'
 }
 
 const dropZoneStyleOnDragActive = {
@@ -19,8 +25,17 @@ const dropZoneStyleOnDragActive = {
   fontSize: 24,
   border: 'dashed 1px #aaaaaa',
   backgroundColor: '#eeeeee',
-  borderRadius: '0.5em',
-  cursor: 'grabbing'
+  borderRadius: '0.25em',
+  cursor: 'grabbing',
+  minWidth: '500px'
+}
+
+const fileNameStyle = {
+  margin: 5,
+  padding: 5,
+  fontSize: 24,
+  backgroundColor: 'rgb(192, 255, 176)',
+  borderRadius: '0.25em'
 }
 
 export default function Dropzone() {
@@ -66,16 +81,23 @@ export default function Dropzone() {
         console.error(error);
     }
   }, []);
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({multiple: false, onDrop});
+  const {getRootProps, getInputProps, isDragActive, isDragReject, acceptedFiles, rejectedFiles} = useDropzone({multiple: false, onDrop});
 
   return (
-    <div {...getRootProps()} style={isDragActive ? dropZoneStyleOnDragActive : dropZoneStyle }>
+    <div style={compStyle}>
+      <div {...getRootProps()} style={isDragActive ? dropZoneStyleOnDragActive : dropZoneStyle }>
       <input {...getInputProps()} />
       {
         isDragActive ?
           <span>Drop the file here!</span> :
           <span>Click to select a file, or drag-and-drop here.</span>
       }
+      </div>
+      {acceptedFiles.length == 1 ? (
+        <div style={fileNameStyle}>
+          {acceptedFiles[0].name}
+        </div>
+      ) : ''}
     </div>
   );
 }
