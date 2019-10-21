@@ -48,5 +48,14 @@
       "type": "image/png"
     }
   ],
+  "file_handler": [
+    {
+      "action": "/",
+      "name": "ZIP File",
+      "accept": {
+        "application/zip": [ ".zip" ]
+      }
+    }
+  ],
   "splash_pages": null
 }
