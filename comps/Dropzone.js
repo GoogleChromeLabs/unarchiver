@@ -27,23 +27,39 @@ export default function Dropzone() {
   const onDrop = useCallback(async acceptedFiles => {
     try {
         const zip = await JSZip.loadAsync(acceptedFiles[0]);
-        for (let name in zip.files) {
-            console.log(name);
+        const output_dir = await FileSystemDirectoryHandle.getSystemDirectory({ type: "sandbox" });
+        for (const name in zip.files) {
+            const path = name.split('/');
+            const file_name = path.pop();
+            let dir = output_dir;
+            for (const component of path) {
+                dir = await dir.getDirectory(component, {create: true});
+            }
+
             const file = zip.files[name];
+
 
             // Skip over directories
             if (file.dir) continue;
 
+            const output_file = await dir.getFile(file_name, {create: true});
+            const writer = await output_file.createWriter({keepExistingData: false});
+
             const stream = file.nodeStream();
             // Too bad stream is not a native stream, but instead a node stream
             // with a totally different API...
-            stream.on('data', chunk => {
-                console.log(chunk);
+            let offset = 0;
+            stream.on('data', async chunk => {
+                stream.pause();
+                await writer.write(offset, chunk);
+                offset += chunk.length;
+                stream.resume();
             });
             await new Promise((resolve, reject) => {
                 stream.on('error', reject);
                 stream.on('end', resolve);
             });
+            writer.close();
         };
     } catch (error) {
         console.error('Failed to load zip file');
