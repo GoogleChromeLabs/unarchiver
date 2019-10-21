@@ -1,0 +1,19 @@
+{
+  "name": "xd-unarch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^9.1.1",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2"
+  }
+}
