@@ -16,15 +16,15 @@ const sleepTimeMs = 200;
 // |sleepFinalTimeMs| is the amount of time in ms to sleep on the final step.
 const sleepFinalTimeMs = 400;
 
-async function unzip(inputFile, outputDirHandle, setProgress) {
+async function unzip(inputFile, outputDirectory, setProgress) {
   try {
     const zip = await JSZip.loadAsync(inputFile);
 
     // Uncomment to use the user-selected directory handle:
-    const output_dir = outputDirHandle;
+    const output_dir = outputDirectory;
     // Uncomment to use the spec-provided sandbox folder:
     // const output_dir = await FileSystemDirectoryHandle.getSystemDirectory({ type: "sandbox" });
-    if (output_dir === '') {
+    if (output_dir === null) {
       console.log("No output directory selected, please select an output directory first");
       return;
     }
@@ -96,8 +96,9 @@ function Unarchive(props) {
       <button onClick={
         async () => {
           props.setRunning(true);
-          await unzip(props.inputFile, props.outputDirHandle, props.setProgress)
+          await unzip(props.inputFile, props.outputDirectory, props.setProgress)
           props.setRunning(false);
+          props.reset();
         }
       }>3. Unarchive</button>
     </div>
@@ -106,23 +107,37 @@ function Unarchive(props) {
 
 function Index() {
   // Declare a state variable for the input file.
-  const [inputFile, setInputFile] = useState('');
+  const [inputFile, setInputFile] = useState(null);
 
   // Declare a state variable for the output directory handle.
-  const [outputDirHandle, setDirHandle] = useState('');
+  const [outputDirectory, setOutputDirectory] = useState(null);
 
   // Declare state variables for tracking running and the progress indicator.
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  function reset() {
+    setInputFile(null);
+    setOutputDirectory(null);
+  }
 
   return (
     <Layout>
       <div>
         <p>Unarchiver</p>
 
-        <ChooseFile setChosenFile={setInputFile} />
-        <ChooseDirectory setChosenDirectory={setDirHandle} />
-        <Unarchive inputFile={inputFile} outputDirHandle={outputDirHandle} setRunning={setRunning} setProgress={setProgress} />
+        <ChooseFile
+            inputFile={inputFile}
+            setChosenFile={setInputFile} />
+        <ChooseDirectory
+            chosenDirectory={outputDirectory}
+            setChosenDirectory={setOutputDirectory} />
+        <Unarchive
+            inputFile={inputFile}
+            outputDirectory={outputDirectory}
+            reset={reset}
+            setProgress={setProgress}
+            setRunning={setRunning} />
         { running ?
             <Line percent={progress} strokeWidth="1" />
             : ''

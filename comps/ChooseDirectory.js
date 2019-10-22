@@ -1,26 +1,23 @@
 import {useState, useCallback} from 'react';
 
-async function promptUserForDirectory(setDirHandle) {
+async function promptUserForDirectory(setDirectory) {
   try {
     const handle = await window.chooseFileSystemEntries({type: 'openDirectory'});
-    setDirHandle(handle);
+    setDirectory(handle);
   } catch (e) {
     console.log(`ERROR: ${JSON.stringify(e.message)}`);
   }
 }
 
 export default function ChooseDirectory(props) {
-  const [chosenDirectory, setChosenDirectory] = useState(null);
-
   var setChosenDirectoryCallback = useCallback((directory) => {
-    setChosenDirectory(directory);
     props.setChosenDirectory(directory);
-  }, [setChosenDirectory, props.setChosenDirectory]);
+  }, [props.setChosenDirectory]);
   return (
-    <div id="chooseBox" className={chosenDirectory != null ? "chosen" : ''}>
+    <div id="chooseBox" className={props.chosenDirectory !== null ? "chosen" : ''}>
       <button onClick={() => promptUserForDirectory(setChosenDirectoryCallback)}>Choose output folder</button>
-      {chosenDirectory != null ?
-          <div id="directoryBox">Saving to: <span id="directoryName">{chosenDirectory.name}</span></div> :
+      {props.chosenDirectory !== null ?
+          <div id="directoryBox">Saving to: <span id="directoryName">{props.chosenDirectory.name}</span></div> :
           ""
       }
       <style jsx>{`

@@ -7,15 +7,9 @@ const compStyle = {
 }
 
 export default function ChooseFile(props) {
-  // Declare a state variable for when onDrop is called.
-  const [acceptedFile, setAcceptedFile] = useState(null);
-  const [onDropCalled, setOnDropCalled] = useState(false);
-
   const onDrop = useCallback((acceptedFiles) => {
-    setOnDropCalled(true);
-    setAcceptedFile(acceptedFiles[0]);
     props.setChosenFile(acceptedFiles[0]);
-  }, [props.setChosenFile, setAcceptedFile]);
+  }, [props.setChosenFile]);
 
   const {getRootProps, getInputProps, isDragActive, open, acceptedFiles} =
       useDropzone({multiple: false, onDrop});
@@ -23,7 +17,7 @@ export default function ChooseFile(props) {
   // The contents of the drop zone changes based on if a file is selected or
   // not.
   let dropZoneContents;
-  if (acceptedFile === null) {
+  if (props.inputFile === null) {
     dropZoneContents =
         <div>
           Drop the compressed file here!
@@ -31,14 +25,14 @@ export default function ChooseFile(props) {
         </div>;
   } else {
     dropZoneContents =
-        <div>Extracting from: <span style={{fontFamily: 'monospace'}}>{acceptedFile.name}</span></div>;
+        <div>Extracting from: <span style={{fontFamily: 'monospace'}}>{props.inputFile.name}</span></div>;
   }
 
   return (
     <div style={compStyle}>
       <div {...getRootProps()}
           className={"dropZone" + (isDragActive ? "  dragActive" : "") +
-                                  (onDropCalled ? " fileSelected" : "")}>
+                                  (props.inputFile !== null ? " fileSelected" : "")}>
         <input {...getInputProps()}/>
         {dropZoneContents}
       </div>
