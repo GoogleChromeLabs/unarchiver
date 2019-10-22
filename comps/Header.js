@@ -11,6 +11,8 @@ export default function Header() {
       <Head>
         <title>xd</title>
 
+        <meta name="Description" content="Explosive Decompression pwa unarchiver" />
+
         <link rel="manifest" href="/static/manifest.json" />
 
         <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png" />
