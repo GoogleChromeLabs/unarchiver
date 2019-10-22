@@ -1,6 +1,5 @@
-import {useCallback} from 'react';
+import {useCallback, useState} from 'react';
 import {useDropzone} from 'react-dropzone';
-import JSZip from 'jszip';
 
 const compStyle = {
   display: 'flex',
@@ -8,60 +7,41 @@ const compStyle = {
   flexWrap: 'wrap'
 }
 
+function AcceptedFile(props) {
+  let fileText = (<div></div>);
+  if (props.onDropCalled) {
+    console.log("on drop called true");
+    fileText = props.inputFiles.length === 1 ? (
+      <div>
+        <div className="selectedFile">
+          {props.inputFiles[0].name}
+        </div>
+        <style jsx>{`
+          .selectedFile {
+            margin: 5px;
+            padding: 5px;
+            font-size: 24px;
+            text-align: center;
+            background-color: rgb(192, 255, 176);
+            border-radius: 0.25em;
+            flex-grow: 2;
+          }
+        `}</style>
+      </div>
+    ) : 'Multiple files are not supported.';
+  }
+
+  return fileText;
+}
+
 export default function Dropzone(props) {
-  const onDrop = useCallback(async acceptedFiles => {
-    try {
-        if (props.dirHandle === '') {
-          console.log("No output directory selected, please select an output directory first");
-          return;
-        }
-        const zip = await JSZip.loadAsync(acceptedFiles[0]);
-        // Uncomment to use the user-selected directory handle:
-        const output_dir = props.dirHandle;
-        // Uncomment to use the spec-provided sandbox folder:
-        // const output_dir = await FileSystemDirectoryHandle.getSystemDirectory({ type: "sandbox" });
-        for (const name in zip.files) {
-            const path = name.split('/');
-            const file_name = path.pop();
-            let dir = output_dir;
-            for (const component of path) {
-                dir = await dir.getDirectory(component, {create: true});
-            }
+  // Declare a state variable for when onDrop is called.
+  const [onDropCalled, setOnDropCalled] = useState(false);
 
-            const file = zip.files[name];
-
-
-            // Skip over directories
-            if (file.dir) continue;
-
-            const output_file = await dir.getFile(file_name, {create: true});
-            const writer = await output_file.createWriter({keepExistingData: false});
-
-            const stream = file.nodeStream();
-            // Too bad stream is not a native stream, but instead a node stream
-            // with a totally different API...
-            let offset = 0;
-            let write_op;
-            stream.on('data', async chunk => {
-                stream.pause();
-                write_op = writer.write(offset, chunk);
-                await write_op;
-                offset += chunk.length;
-                stream.resume();
-            });
-            await new Promise((resolve, reject) => {
-                stream.on('error', reject);
-                stream.on('end', resolve);
-            });
-            // Make sure the last write operation actually finished.
-            await write_op;
-            writer.close();
-        };
-    } catch (error) {
-        console.error('Failed to load zip file');
-        console.error(error);
-    }
-  }, [props.dirHandle]);
+  const onDrop = useCallback((acceptedFiles) => {
+    setOnDropCalled(true);
+    props.setInputFile(acceptedFiles[0]);
+  }, [props.setInputFile]);
   const {getRootProps, getInputProps, isDragActive, isDragReject, acceptedFiles, rejectedFiles} = useDropzone({multiple: false, onDrop});
 
   return (
@@ -69,14 +49,10 @@ export default function Dropzone(props) {
       <div {...getRootProps()} className={"dropZone" + (isDragActive ? "  dragActive" : "") }>
       <input {...getInputProps()} />
       <span>{
-        isDragActive ? "Drop the file here!": "Click to select a file, or drag-and-drop here."
+        isDragActive ? "1. Drop the file here!": "1. Click to select a file, or drag-and-drop here."
       }</span>
       </div>
-      {acceptedFiles.length == 1 ? (
-        <div className="selectedFile">
-          {acceptedFiles[0].name}
-        </div>
-      ) : ''}
+      <AcceptedFile onDropCalled={onDropCalled} inputFiles={acceptedFiles} />
       <style jsx>{`
         .dropZone {
           margin: 5px;
@@ -96,15 +72,6 @@ export default function Dropzone(props) {
           cursor: grabbing;
           border-radius: 0;
           box-shadow: 0px 0px;
-        }
-        .selectedFile {
-          margin: 5px;
-          padding: 5px;
-          font-size: 24px;
-          text-align: center;
-          background-color: rgb(192, 255, 176);
-          border-radius: 0.25em;
-          flex-grow: 2;
         }
       `}</style>
     </div>
