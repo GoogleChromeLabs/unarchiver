@@ -2,6 +2,7 @@ import Layout from '../comps/Layout.js'
 import ChooseFile from '../comps/ChooseFile.js'
 import {useState} from 'react';
 import JSZip from 'jszip';
+import { Line } from 'rc-progress';
 
 function OutputSelector(props) {
   return (
@@ -20,7 +21,17 @@ async function chooseDirHandle(setDirHandle) {
   }
 }
 
-async function unzip(inputFile, outputDirHandle) {
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// |sleepTimeMs| is the amount of time in ms to sleep between step updates.
+const sleepTimeMs = 200;
+
+// |sleepFinalTimeMs| is the amount of time in ms to sleep on the final step.
+const sleepFinalTimeMs = 400;
+
+async function unzip(inputFile, outputDirHandle, setProgress) {
   try {
     const zip = await JSZip.loadAsync(inputFile);
 
@@ -33,7 +44,21 @@ async function unzip(inputFile, outputDirHandle) {
       return;
     }
 
+    // |progress| tracks the current progress indicator value.
+    let progress = 0;
+
+    // |progress_step| is the amount of progress we increment by on the
+    // progress indicator.  There are progress indicator steps for each entry
+    // in the keys array plus the final "100%" bump after the for loop
+    // completes.
+    let progress_step = 100 / (Object.keys(zip.files).length+1);
+
     for (const name in zip.files) {
+      await sleep(sleepTimeMs);
+      progress += progress_step;
+      setProgress(progress);
+      await sleep(sleepTimeMs);
+
       const path = name.split('/');
       const file_name = path.pop();
       let dir = output_dir;
@@ -69,6 +94,11 @@ async function unzip(inputFile, outputDirHandle) {
       await write_op;
       writer.close();
     };
+
+    await sleep(sleepTimeMs);
+    progress += progress_step;
+    setProgress(progress);
+    await sleep(sleepFinalTimeMs);
   } catch (error) {
       console.error('Failed to load zip file');
       console.error(error);
@@ -79,7 +109,11 @@ function Unarchive(props) {
   return (
     <div>
       <button onClick={
-        () => unzip(props.inputFile, props.outputDirHandle)
+        async () => {
+          props.setRunning(true);
+          await unzip(props.inputFile, props.outputDirHandle, props.setProgress)
+          props.setRunning(false);
+        }
       }>3. Unarchive</button>
     </div>
   )
@@ -93,6 +127,10 @@ function Index() {
   const [outputDirHandle, setDirHandle] = useState('');
   const chooseAndSetDirHandle = chooseDirHandle.bind(this, setDirHandle);
 
+  // Declare state variables for tracking running and the progress indicator.
+  const [running, setRunning] = useState(false);
+  const [progress, setProgress] = useState(0);
+
   return (
     <Layout>
       <div>
@@ -100,7 +138,11 @@ function Index() {
 
         <ChooseFile setChosenFile={setInputFile} />
         <OutputSelector chooseDirHandle={chooseAndSetDirHandle} />
-        <Unarchive inputFile={inputFile} outputDirHandle={outputDirHandle}/>
+        <Unarchive inputFile={inputFile} outputDirHandle={outputDirHandle} setRunning={setRunning} setProgress={setProgress} />
+        { running ?
+            <Line percent={progress} strokeWidth="1" />
+            : ''
+        }
       </div>
     </Layout>
   );
