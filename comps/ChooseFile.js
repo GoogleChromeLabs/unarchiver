@@ -8,7 +8,7 @@ const compStyle = {
 
 export default function ChooseFile(props) {
   // Declare a state variable for when onDrop is called.
-  const [acceptedFile, setAcceptedFile] = useState(undefined);
+  const [acceptedFile, setAcceptedFile] = useState(null);
   const [onDropCalled, setOnDropCalled] = useState(false);
 
   const onDrop = useCallback((acceptedFiles) => {
@@ -20,18 +20,27 @@ export default function ChooseFile(props) {
   const {getRootProps, getInputProps, isDragActive, open, acceptedFiles} =
       useDropzone({multiple: false, onDrop});
 
+  // The contents of the drop zone changes based on if a file is selected or
+  // not.
+  let dropZoneContents;
+  if (acceptedFile === null) {
+    dropZoneContents =
+        <div>
+          Drop the compressed file here!
+          <div style={{fontSize: 18, textDecoration: 'underline'}}>Click Here</div>
+        </div>;
+  } else {
+    dropZoneContents =
+        <div>Extracting from: <span style={{fontFamily: 'monospace'}}>{acceptedFile.name}</span></div>;
+  }
+
   return (
     <div style={compStyle}>
       <div {...getRootProps()}
           className={"dropZone" + (isDragActive ? "  dragActive" : "") +
                                   (onDropCalled ? " fileSelected" : "")}>
         <input {...getInputProps()}/>
-        <div>{
-          acceptedFile === undefined ? 
-              "Drop the compressed file here!" :
-              <span className="acceptedFile">{acceptedFile.name}</span>
-        }</div>
-        <span className="clickHere">Click Here</span>
+        {dropZoneContents}
       </div>
       <style jsx>{`
         .dropZone {
@@ -52,13 +61,6 @@ export default function ChooseFile(props) {
           border: dashed 3px #888888;
           background-color: #aaaadd;
           cursor: grabbing;
-        }
-        .acceptedFile {
-          font-family: monospace;
-        }
-        .clickHere {
-          font-size: 18px;
-          text-decoration: underline;
         }
       `}</style>
     </div>

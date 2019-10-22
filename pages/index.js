@@ -1,25 +1,10 @@
 import Layout from '../comps/Layout.js'
 import ChooseFile from '../comps/ChooseFile.js'
+import ChooseDirectory from '../comps/ChooseDirectory.js'
 import {useState} from 'react';
 import JSZip from 'jszip';
 import { Line } from 'rc-progress';
 
-function OutputSelector(props) {
-  return (
-    <div>
-      <button onClick={() => props.chooseDirHandle()}>2. Pick an output folder</button>
-    </div>
-  )
-}
-
-async function chooseDirHandle(setDirHandle) {
-  try {
-    const handle = await window.chooseFileSystemEntries({type: 'openDirectory'});
-    setDirHandle(handle);
-  } catch (e) {
-    console.log(`ERROR: ${JSON.stringify(e.message)}`);
-  }
-}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -125,7 +110,6 @@ function Index() {
 
   // Declare a state variable for the output directory handle.
   const [outputDirHandle, setDirHandle] = useState('');
-  const chooseAndSetDirHandle = chooseDirHandle.bind(this, setDirHandle);
 
   // Declare state variables for tracking running and the progress indicator.
   const [running, setRunning] = useState(false);
@@ -137,7 +121,7 @@ function Index() {
         <p>Unarchiver</p>
 
         <ChooseFile setChosenFile={setInputFile} />
-        <OutputSelector chooseDirHandle={chooseAndSetDirHandle} />
+        <ChooseDirectory setChosenDirectory={setDirHandle} />
         <Unarchive inputFile={inputFile} outputDirHandle={outputDirHandle} setRunning={setRunning} setProgress={setProgress} />
         { running ?
             <Line percent={progress} strokeWidth="1" />
