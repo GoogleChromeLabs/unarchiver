@@ -75,12 +75,12 @@ async function unzip(inputFile, outputDirHandle) {
   }
 }
 
-function Decompress(props) {
+function Unarchive(props) {
   return (
     <div>
       <button onClick={
         () => unzip(props.inputFile, props.outputDirHandle)
-      }>3. Decompress</button>
+      }>3. Unarchive</button>
     </div>
   )
 }
@@ -100,7 +100,7 @@ function Index() {
 
         <Dropzone setInputFile={setInputFile} />
         <OutputSelector chooseDirHandle={chooseAndSetDirHandle} />
-        <Decompress inputFile={inputFile} outputDirHandle={outputDirHandle}/>
+        <Unarchive inputFile={inputFile} outputDirHandle={outputDirHandle}/>
       </div>
     </Layout>
   );
