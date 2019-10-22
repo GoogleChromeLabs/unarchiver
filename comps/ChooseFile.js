@@ -6,7 +6,7 @@ const compStyle = {
   flexDirection: 'column',
 }
 
-export default function Dropzone(props) {
+export default function ChooseFile(props) {
   // Declare a state variable for when onDrop is called.
   const [acceptedFile, setAcceptedFile] = useState(undefined);
   const [onDropCalled, setOnDropCalled] = useState(false);
@@ -14,8 +14,8 @@ export default function Dropzone(props) {
   const onDrop = useCallback((acceptedFiles) => {
     setOnDropCalled(true);
     setAcceptedFile(acceptedFiles[0]);
-    props.setInputFile(acceptedFiles[0]);
-  }, [props.setInputFile, setAcceptedFile]);
+    props.setChosenFile(acceptedFiles[0]);
+  }, [props.setChosenFile, setAcceptedFile]);
 
   const {getRootProps, getInputProps, isDragActive, open, acceptedFiles} =
       useDropzone({multiple: false, onDrop});

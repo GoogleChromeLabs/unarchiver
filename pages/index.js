@@ -1,5 +1,5 @@
 import Layout from '../comps/Layout.js'
-import Dropzone from '../comps/Dropzone.js'
+import ChooseFile from '../comps/ChooseFile.js'
 import {useState} from 'react';
 import JSZip from 'jszip';
 
@@ -98,7 +98,7 @@ function Index() {
       <div>
         <p>Unarchiver</p>
 
-        <Dropzone setInputFile={setInputFile} />
+        <ChooseFile setChosenFile={setInputFile} />
         <OutputSelector chooseDirHandle={chooseAndSetDirHandle} />
         <Unarchive inputFile={inputFile} outputDirHandle={outputDirHandle}/>
       </div>
