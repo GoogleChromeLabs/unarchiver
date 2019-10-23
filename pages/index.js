@@ -22,13 +22,6 @@ function Unarchive(props) {
   )
 }
 
-function createRows(files) {
-  const items = [];
-  for (const file of files) 
-    items.push(<li>{file}</li>);
-  return items;
-}
-
 function Index() {
   // Declare a state variable for the input file.
   const [inputFile, setInputFile] = useState(null);
@@ -88,7 +81,7 @@ function Index() {
           <div>
             Files to extract:
             <ul>
-              {createRows(files)}
+              { files.map((file, i) => <li key={i}>{file}</li>) }
             </ul>
           </div>
         )}
