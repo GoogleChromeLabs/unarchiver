@@ -28,9 +28,35 @@ const resultState = {
 };
 
 function StatusBox(props) {
-  if (props.state == resultState.UNKNOWN)
+  if (props.state === resultState.UNKNOWN || !props.message)
     return null;
-  return <div>{props.message}</div>;
+
+  // Support message as either an array or a string.
+  let messageList = Array.isArray(props.message) ? props.message : [props.message];
+
+  return (
+    <div id="statusBox" className={props.resultStatus}>
+      { messageList.map((msg, i) => <div key={i}>{msg}</div>) }
+      <style jsx>{`
+      #statusBox {
+        padding: 5px;
+        margin: 5px;
+        border-radius: 0.25em;
+        min-height: 40px;
+      }
+      #statusBox.success {
+        background-color: #aaddaf;
+      }
+      #statusBox.fail {
+        background-color: #ffaaaa;
+      }
+      #statusBox div {
+        display: flex;
+        flex-direction: row;
+      }
+      `}</style>
+    </div>
+  );
 }
 
 function createRows(files) {
@@ -43,13 +69,13 @@ function createRows(files) {
 function statusUpdater(setStatus) {
   return {
     setSuccess: (msg) => {
-      setStatus({status: resultState.SUCCESS, message: msg});
+      setStatus({state: resultState.SUCCESS, message: msg});
     },
     setError: (msg) => {
-      setStatus({status: resultState.FAIL, message: msg});
+      setStatus({state: resultState.FAIL, message: msg});
     },
     clearStatus: () => {
-      setStatus({status: resultState.UNKNOWN, message: null});
+      setStatus({state: resultState.UNKNOWN, message: null});
     },
   };
 }
@@ -67,7 +93,7 @@ function Index() {
 
   const [files, setFiles] = useState([]);
 
-  const [resultStatus, setStatus] = useState({ state: resultState.UNKNOWN, message: null});
+  const [resultStatus, setStatus] = useState({state: resultState.UNKNOWN, message: null});
 
   var setInputFileInterceptor = useCallback(async (inputFile) => {
     setInputFile(inputFile);
@@ -79,8 +105,9 @@ function Index() {
     else {
       setFiles([]);
     }
+    setStatus({state: resultState.UNKNOWN, message: null});
     console.log("set files");
-  }, [setInputFile, setFiles]);
+  }, [setInputFile, setFiles, setStatus]);
 
   function reset() {
     setInputFile(null);
