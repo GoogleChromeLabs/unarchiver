@@ -4,6 +4,7 @@ import ChooseDirectory from '../comps/ChooseDirectory.js'
 import {useState, useCallback} from 'react';
 import {unzip, enumerateFiles} from '../comps/Zip.js';
 import { Line } from 'rc-progress';
+import {StatusBox, statusUpdater, resultState} from '../comps/StatusBox.js'
 
 function Unarchive(props) {
   return (
@@ -21,63 +22,11 @@ function Unarchive(props) {
   )
 }
 
-const resultState = {
-  SUCCESS: 'success',
-  FAIL: 'fail',
-  UNKNOWN: 'unknown',
-};
-
-function StatusBox(props) {
-  if (props.state === resultState.UNKNOWN || !props.message)
-    return null;
-
-  // Support message as either an array or a string.
-  let messageList = Array.isArray(props.message) ? props.message : [props.message];
-
-  return (
-    <div id="statusBox" className={props.resultStatus}>
-      { messageList.map((msg, i) => <div key={i}>{msg}</div>) }
-      <style jsx>{`
-      #statusBox {
-        padding: 5px;
-        margin: 5px;
-        border-radius: 0.25em;
-        min-height: 40px;
-      }
-      #statusBox.success {
-        background-color: #aaddaf;
-      }
-      #statusBox.fail {
-        background-color: #ffaaaa;
-      }
-      #statusBox div {
-        display: flex;
-        flex-direction: row;
-      }
-      `}</style>
-    </div>
-  );
-}
-
 function createRows(files) {
   const items = [];
   for (const file of files) 
     items.push(<li>{file}</li>);
   return items;
-}
-
-function statusUpdater(setStatus) {
-  return {
-    setSuccess: (msg) => {
-      setStatus({state: resultState.SUCCESS, message: msg});
-    },
-    setError: (msg) => {
-      setStatus({state: resultState.FAIL, message: msg});
-    },
-    clearStatus: () => {
-      setStatus({state: resultState.UNKNOWN, message: null});
-    },
-  };
 }
 
 function Index() {
