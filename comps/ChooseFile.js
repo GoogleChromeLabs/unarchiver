@@ -28,15 +28,16 @@ export default function ChooseFile(props) {
         <div>Extracting from: <span style={{fontFamily: 'monospace'}}>{props.inputFile.name}</span></div>;
   }
 
-  useEffect(() => {
-      console.log("Loaded");
+  useEffect(async () => {
       if (!window.launchParams ||
           !window.launchParams.files ||
           !window.launchParams.files.length) {
           return;
       }
-      console.log("Checking launch params");
-      onDrop(window.launchParams.files);
+      let files = [];
+      for (let file of window.launchParams.files) {
+          files.push(await file.getFile());
+      onDrop(files);
   }, []);
 
   return (
