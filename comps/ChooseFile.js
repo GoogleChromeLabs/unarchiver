@@ -20,8 +20,8 @@ export default function ChooseFile(props) {
   if (props.inputFile === null) {
     dropZoneContents =
         <div>
-          Drop the compressed file here!
-          <div style={{fontSize: 18, textDecoration: 'underline'}}>Click Here</div>
+          First, drop the compressed file here!
+          <div style={{fontSize: 18, textDecoration: 'underline'}}>(or click here to manually select)</div>
         </div>;
   } else {
     dropZoneContents =

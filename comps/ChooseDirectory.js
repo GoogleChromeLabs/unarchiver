@@ -15,7 +15,7 @@ export default function ChooseDirectory(props) {
   }, [props.setChosenDirectory]);
   return (
     <div id="chooseBox" className={props.chosenDirectory !== null ? "chosen" : ''}>
-      <button onClick={() => promptUserForDirectory(setChosenDirectoryCallback)}>Choose output folder</button>
+      <button onClick={() => promptUserForDirectory(setChosenDirectoryCallback)}>Then, choose an output folder</button>
       {props.chosenDirectory !== null ?
           <div id="directoryBox">Saving to: <span id="directoryName">{props.chosenDirectory.name}</span></div> :
           ""
