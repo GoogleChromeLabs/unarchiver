@@ -8,7 +8,7 @@ import {StatusBox, statusUpdater, resultState} from '../comps/StatusBox.js'
 
 function Unarchive(props) {
   return (
-    <div style={{margin: 5}}>
+    <div style={{margin: 10}}>
       <button disabled={!props.inputFile || !props.outputDirectory} onClick={
         async () => {
           props.setRunning(true);
@@ -17,7 +17,7 @@ function Unarchive(props) {
           props.setRunning(false);
           props.reset();
         }
-      } style={{'font-size': 14, padding: 5}}>Decompress! 💥</button>
+      } style={{'font-size': 18, padding: 8}}>Decompress! 💥</button>
     </div>
   )
 }
