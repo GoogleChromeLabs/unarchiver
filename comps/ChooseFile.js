@@ -37,6 +37,7 @@ export default function ChooseFile(props) {
       let files = [];
       for (let file of window.launchParams.files)
           files.push(await file.getFile());
+      }
       onDrop(files);
   }, []);
 
