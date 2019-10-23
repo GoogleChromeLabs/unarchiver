@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useState, useEffect} from 'react';
 import {useDropzone} from 'react-dropzone';
 
 const compStyle = {
@@ -27,6 +27,15 @@ export default function ChooseFile(props) {
     dropZoneContents =
         <div>Extracting from: <span style={{fontFamily: 'monospace'}}>{props.inputFile.name}</span></div>;
   }
+
+  useEffect(() => {
+      if (!window.launchParams ||
+          !window.launchParams.files ||
+          !window.launchParams.files.length) {
+          return;
+      }
+      onDrop(window.launchParams.files);
+  }, []);
 
   return (
     <div style={compStyle}>
