@@ -29,11 +29,13 @@ export default function ChooseFile(props) {
   }
 
   useEffect(() => {
+      console.log("Loaded");
       if (!window.launchParams ||
           !window.launchParams.files ||
           !window.launchParams.files.length) {
           return;
       }
+      console.log("Checking launch params");
       onDrop(window.launchParams.files);
   }, []);
 
