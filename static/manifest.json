@@ -51,10 +51,12 @@
   "file_handler": [
     {
       "action": "/",
-      "name": "ZIP File",
-      "accept": {
-        "application/zip": [ ".zip" ]
-      }
+      "files": [
+        {
+          "name": "ZIP File",
+          "accept": [".zip"]
+	}
+      ]
     }
   ],
   "splash_pages": null
