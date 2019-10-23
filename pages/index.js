@@ -17,7 +17,7 @@ function Unarchive(props) {
           props.setRunning(false);
           props.reset();
         }
-      }>Decompress! 💥</button>
+      } style={{'font-size': 14, padding: 5}}>Decompress! 💥</button>
     </div>
   )
 }
