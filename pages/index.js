@@ -62,8 +62,6 @@ function Index() {
   return (
     <Layout>
       <div>
-        <p>Unarchiver</p>
-
         <ChooseFile
             inputFile={inputFile}
             setChosenFile={setInputFileInterceptor} />
