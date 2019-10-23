@@ -48,7 +48,7 @@
       "type": "image/png"
     }
   ],
-  "file_handler": [
+  "file_handler":
     {
       "action": "/",
       "files": [
@@ -61,7 +61,6 @@
 	  "accept": [".tar", ".tar.gz", ".tgz", "application/x-tar", "application/x-tgz", "application/x-gzip"]
 	}
       ]
-    }
-  ],
+    },
   "splash_pages": null
 }
