@@ -5,7 +5,7 @@ export default function About() {
     <Layout>
       <div>
         <p>Unarchiver, 0.1</p>
-        <p>Designed by Team XD in California</p>
+        <p>Designed by Team XD and Fugucast in California</p>
       </div>
     </Layout>
   );
