@@ -54,7 +54,11 @@
       "files": [
         {
           "name": "ZIP File",
-          "accept": [".zip"]
+          "accept": [".zip", ".z2", "application/zip"]
+	},
+	{
+	  "name": "TAR File",
+	  "accept": [".tar", ".tar.gz", ".tgz", "application/x-tar", "application/x-tgz", "application/x-gzip"]
 	}
       ]
     }
