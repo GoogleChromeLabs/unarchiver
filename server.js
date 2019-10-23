@@ -3,6 +3,7 @@ const { join } = require('path')
 const { parse } = require('url')
 const next = require('next')
 
+const port = process.env.PORT || 3000
 const app = next({ dev: process.env.NODE_ENV !== 'production' })
 const handle = app.getRequestHandler()
 
@@ -21,7 +22,7 @@ app.prepare()
         handle(req, res, parsedUrl)
       }
     })
-    .listen(3000, () => {
+    .listen(port, () => {
       console.log(`> Ready on http://localhost:${3000}`)
     })
   })
