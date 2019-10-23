@@ -1,13 +1,13 @@
 import Layout from '../comps/Layout.js'
 import ChooseFile from '../comps/ChooseFile.js'
 import ChooseDirectory from '../comps/ChooseDirectory.js'
-import {useState} from 'react';
-import {unzip} from '../comps/Zip.js';
+import {useState, useCallback} from 'react';
+import {unzip, enumerateFiles} from '../comps/Zip.js';
 import { Line } from 'rc-progress';
 
 function Unarchive(props) {
   return (
-    <div>
+    <div style={{margin: 5}}>
       <button onClick={
         async () => {
           props.setRunning(true);
@@ -18,6 +18,13 @@ function Unarchive(props) {
       }>3. Unarchive</button>
     </div>
   )
+}
+
+function createRows(files) {
+  const items = [];
+  for (const file of files) 
+    items.push(<li>{file}</li>);
+  return items;
 }
 
 function Index() {
@@ -31,9 +38,25 @@ function Index() {
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const [files, setFiles] = useState([]);
+
+  var setInputFileInterceptor = useCallback(async (inputFile) => {
+    setInputFile(inputFile);
+    console.log(inputFile);
+    if (inputFile != null) {
+      let enumerated = await enumerateFiles(inputFile);
+      setFiles(enumerated);
+    }
+    else {
+      setFiles([]);
+    }
+    console.log("set files");
+  }, [setInputFile, setFiles]);
+
   function reset() {
     setInputFile(null);
     setOutputDirectory(null);
+    setFiles([]);
   }
 
   return (
@@ -43,7 +66,7 @@ function Index() {
 
         <ChooseFile
             inputFile={inputFile}
-            setChosenFile={setInputFile} />
+            setChosenFile={setInputFileInterceptor} />
         <ChooseDirectory
             chosenDirectory={outputDirectory}
             setChosenDirectory={setOutputDirectory} />
@@ -57,6 +80,14 @@ function Index() {
             <Line percent={progress} strokeWidth="1" />
             : ''
         }
+        { files != null && files.length != 0 && (
+          <div>
+            Files to extract:
+            <ul>
+              {createRows(files)}
+            </ul>
+          </div>
+        )}
       </div>
     </Layout>
   );

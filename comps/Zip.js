@@ -7,6 +7,7 @@ export async function enumerateFiles(inputFile) {
   for (const name in zip.files) {
     files.push(name);
   }
+  console.log(files);
   return files;
 }
 
