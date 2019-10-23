@@ -1,5 +1,5 @@
-export default function CreateDirectories(root_directory, file_path) {
-  const file_path = name.split('/');
+export default async function CreateDirectories(root_directory, file_path) {
+  const path = file_path.split('/');
   const file_name = path.pop();
   let dir = root_directory;
   for (const component of path) {
