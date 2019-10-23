@@ -28,6 +28,7 @@ export default function ChooseDirectory(props) {
         margin: 5px;
         background-color: #ffdddd;
         border-radius: 0.25em;
+        min-height: 40px;
       }
       #chooseBox.chosen {
         background-color: #aaddaf;

@@ -46,9 +46,12 @@ export default function ChooseFile(props) {
           background-color: #ffdddd;
           border-radius: 0.25em;
           cursor: pointer;
+          min-height: 60px;
         }
         .dropZone.fileSelected {
           border: none;
+          min-height: 46px;
+          padding-top: 25px;
           background-color: #aaddaf;
         }
         .dropZone.dragActive {
