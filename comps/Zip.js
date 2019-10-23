@@ -72,15 +72,10 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
       });
       await new Promise((resolve, reject) => {
           stream.on('error', () => {
-            statusUpdater.setError('Stream Error');
+            statusUpdater.setError('Error: Could not extract ' + file_name + '.');
             reject();
           });
-          stream.on('end', () => {
-            let plural_files = num_files > 1 ? 'files' : 'file';
-            let message = 'Extracted ' + num_files + plural_files + '.';
-            statusUpdater.setSuccess(message);
-            resolve();
-          });
+          stream.on('end', resolve);
       });
       // Make sure the last write operation actually finished.
       await write_op;
@@ -90,6 +85,12 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
     await sleep(sleepTimeMs);
     progress += progress_step;
     setProgress(progress);
+
+    let plural_files = num_files > 1 ? 'files' : 'file';
+    let message = 'Extracted ' + num_files + ' ' + plural_files +
+        ' from ' + inputFile.path + '.';
+    statusUpdater.setSuccess(message);
+
     await sleep(sleepFinalTimeMs);
   } catch (error) {
     console.error('Failed to load zip file');
