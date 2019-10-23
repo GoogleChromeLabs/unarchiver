@@ -8,7 +8,7 @@ import { Line } from 'rc-progress';
 function Unarchive(props) {
   return (
     <div style={{margin: 5}}>
-      <button onClick={
+      <button disabled={!props.inputFile || !props.outputDirectory} onClick={
         async () => {
           props.setRunning(true);
           await unzip(props.inputFile, props.outputDirectory, props.setProgress)
