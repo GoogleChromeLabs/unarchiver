@@ -11,7 +11,8 @@ function Unarchive(props) {
       <button disabled={!props.inputFile || !props.outputDirectory} onClick={
         async () => {
           props.setRunning(true);
-          await unzip(props.inputFile, props.outputDirectory, props.setProgress)
+          props.statusUpdater.clearStatus();
+          await unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater);
           props.setRunning(false);
           props.reset();
         }
@@ -20,11 +21,37 @@ function Unarchive(props) {
   )
 }
 
+const resultState = {
+  SUCCESS: 'success',
+  FAIL: 'fail',
+  UNKNOWN: 'unknown',
+};
+
+function StatusBox(props) {
+  if (props.state == resultState.UNKNOWN)
+    return null;
+  return <div>{props.message}</div>;
+}
+
 function createRows(files) {
   const items = [];
   for (const file of files) 
     items.push(<li>{file}</li>);
   return items;
+}
+
+function statusUpdater(setStatus) {
+  return {
+    setSuccess: (msg) => {
+      setStatus({status: resultState.SUCCESS, message: msg});
+    },
+    setError: (msg) => {
+      setStatus({status: resultState.FAIL, message: msg});
+    },
+    clearStatus: () => {
+      setStatus({status: resultState.UNKNOWN, message: null});
+    },
+  };
 }
 
 function Index() {
@@ -39,6 +66,8 @@ function Index() {
   const [progress, setProgress] = useState(0);
 
   const [files, setFiles] = useState([]);
+
+  const [resultStatus, setStatus] = useState({ state: resultState.UNKNOWN, message: null});
 
   var setInputFileInterceptor = useCallback(async (inputFile) => {
     setInputFile(inputFile);
@@ -73,7 +102,8 @@ function Index() {
             outputDirectory={outputDirectory}
             reset={reset}
             setProgress={setProgress}
-            setRunning={setRunning} />
+            setRunning={setRunning}
+            statusUpdater={statusUpdater(setStatus)} />
         { running ?
             <Line percent={progress} strokeWidth="1" />
             : ''
@@ -86,6 +116,9 @@ function Index() {
             </ul>
           </div>
         )}
+        <StatusBox
+            resultStatus={resultStatus.state}
+            message={resultStatus.message} />
       </div>
     </Layout>
   );

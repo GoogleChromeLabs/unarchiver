@@ -21,7 +21,7 @@ const sleepTimeMs = 200;
 // |sleepFinalTimeMs| is the amount of time in ms to sleep on the final step.
 const sleepFinalTimeMs = 400;
 
-export async function unzip(inputFile, outputDirHandle, setProgress) {
+export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdater) {
   try {
     const zip = await JSZip.loadAsync(inputFile);
 
@@ -41,7 +41,8 @@ export async function unzip(inputFile, outputDirHandle, setProgress) {
     // progress indicator.  There are progress indicator steps for each entry
     // in the keys array plus the final "100%" bump after the for loop
     // completes.
-    let progress_step = 100 / (Object.keys(zip.files).length+1);
+    let num_files = Object.keys(zip.files).length;
+    let progress_step = 100 / (num_files + 1);
 
     for (const name in zip.files) {
       await sleep(sleepTimeMs);
@@ -70,8 +71,16 @@ export async function unzip(inputFile, outputDirHandle, setProgress) {
           stream.resume();
       });
       await new Promise((resolve, reject) => {
-          stream.on('error', reject);
-          stream.on('end', resolve);
+          stream.on('error', () => {
+            statusUpdater.setError('Stream Error');
+            reject();
+          });
+          stream.on('end', () => {
+            let plural_files = num_files > 1 ? 'files' : 'file';
+            let message = 'Extracted ' + num_files + plural_files + '.';
+            statusUpdater.setSuccess(message);
+            resolve();
+          });
       });
       // Make sure the last write operation actually finished.
       await write_op;
@@ -85,5 +94,6 @@ export async function unzip(inputFile, outputDirHandle, setProgress) {
   } catch (error) {
     console.error('Failed to load zip file');
     console.error(error);
+    statusUpdater.setError('Failed to load zip file');
   }
 }
