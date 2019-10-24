@@ -56,11 +56,31 @@ function findExtractor(mime, filename) {
   return null;
 }
 
+function showUnsupportedError(mime, filename, statusUpdater) {
+  let mimeStr = mime ? ' (' + mime + ')' : '';
+  let message = [
+    'Unsupported file: ' + filename + mimeStr,
+  ];
+  message.push('--');
+  message.push('Supported mime types:');
+  for (let i = 0; i < extractors.length; ++i) {
+    if (extractors[i].supported)
+      message.push(...extractors[i].mimes.map(x => ' * ' + x));
+  }
+  message.push('--');
+  message.push('Supported extensions:');
+  for (let i = 0; i < extractors.length; ++i) {
+    if (extractors[i].supported)
+      message.push(...extractors[i].extensions.map(x => ' * ' + x));
+  }
+
+  statusUpdater.setError(message);
+}
+
 async function extract(props) {
   let ex = findExtractor(props.inputFile.type, props.inputFile.name);
   if (!ex) {
-    // TODO: make this better
-    props.statusUpdater.setError('no extractor found');
+    showUnsupportedError(props.inputFile.type, props.inputFile.name, props.statusUpdater);
     return;
   }
   ex.func(props);
@@ -115,6 +135,12 @@ function Index() {
     setInputFile(inputFile);
     console.log(inputFile);
     setFiles([]);
+
+    if (!findExtractor(inputFile.type, inputFile.name)) {
+      showUnsupportedError(inputFile.type, inputFile.name, statusUpdater(setStatus));
+      return;
+    }
+
     if (inputFile != null && inputFile.type == "application/zip") {
       let enumerated = await enumerateFiles(inputFile);
       setFiles(enumerated);
