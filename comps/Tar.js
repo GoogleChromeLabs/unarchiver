@@ -1,17 +1,22 @@
-import {extract, pack} from "tar-stream"
-import CreateDirectories from "FileUtil"
+import {extract} from "tar-stream"
+import CreateDirectories from "./FileUtil.js"
 
-function Untar(file, output_dir) {
+export function Untar(file, output_dir) {
   return new Promise((resolve, reject) => {
-    extract.on('entry', async function(header, stream, next) {
+    var extractObj = extract();
+    extractObj.on('entry', async function(header, stream, next) {
       console.log("Got tar entry with headers", header);
       // stream is the content body (might be an empty stream)
       // call next when you are done with this entry
-      const [directory, file_name] = CreateDirectories(output_dir, output_file)
+      const [directory, file_name] = await CreateDirectories(output_dir, output_file)
 
       // Skip over everything but files.
       // TODO handle symlinks
-      if (header.type =! "file") continue;
+      if (header.type =! "file") {
+        stream.resume();
+        next();
+        return;
+      }
 
       const output_file = await directory.getFile(file_name, {create: true});
       console.log('Created file ' + file_name);
@@ -40,7 +45,7 @@ function Untar(file, output_dir) {
       writer.close();
     });
 
-    extract.on('finish', function() {
+    extractObj.on('finish', function() {
       console.log("finished processing tar");
     });
 

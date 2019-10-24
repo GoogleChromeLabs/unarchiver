@@ -3,6 +3,7 @@ import ChooseFile from '../comps/ChooseFile.js'
 import ChooseDirectory from '../comps/ChooseDirectory.js'
 import {useState, useCallback} from 'react';
 import {unzip, enumerateFiles} from '../comps/Zip.js';
+import {Untar} from '../comps/Tar.js';
 import { Line } from 'rc-progress';
 import {StatusBox, statusUpdater, resultState} from '../comps/StatusBox.js'
 
@@ -13,7 +14,11 @@ function Unarchive(props) {
         async () => {
           props.setRunning(true);
           props.statusUpdater.clearStatus();
-          await unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater);
+          if (props.inputFile.type == "application/zip") {
+            await unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater);
+          } else if (props.inputFile.type == "application/x-tar") {
+            await Untar(props.inputFile, props.outputDirectory);
+          }
           props.setRunning(false);
           props.reset();
         }
@@ -54,7 +59,7 @@ function Index() {
     setInputFile(inputFile);
     console.log(inputFile);
     setFiles([]);
-    if (inputFile != null) {
+    if (inputFile != null && inputFile.type == "application/zip") {
       let enumerated = await enumerateFiles(inputFile);
       setFiles(enumerated);
     }
