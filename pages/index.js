@@ -14,6 +14,7 @@ const extractors = [
     extract: (props) => unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater),
     enumerateFiles: async (inputFile) => enumerateZip(inputFile),
     supported: true,
+    notesIfUnsupported: '',
   },
   {
     mimes: ['application/x-tar'],
@@ -21,6 +22,7 @@ const extractors = [
     extract: (props) => untar(props.inputFile.stream(), props.outputDirectory),
     enumerateFiles: async (inputFile) => [],
     supported: true,
+    notesIfUnsupported: '',
   },
   {
     mimes: [],
@@ -32,6 +34,13 @@ const extractors = [
     },
     enumerateFiles: async (inputFile) => [],
     supported: (() => (typeof DecompressionStream !== 'undefined'))(),
+    notesIfUnsupported: (() => {
+      if (typeof window !== 'undefined' && window.chrome) {
+        return 'Turn on chrome://flags/#enable-experimental-web-platform-features for DecompressionStream support to enable .tar.gz';
+      } else {
+        return 'Use a browser with DecompressionStream support to enable .tar.gz';
+      }
+    })(),
   },
 ];
 
@@ -62,17 +71,27 @@ function showUnsupportedError(mime, filename, statusUpdater) {
   let message = [
     'Unsupported file: ' + filename + mimeStr,
   ];
+  let unsupported = [];
+  for (let i = 0; i < extractors.length; ++i) {
+    if (!extractors[i].supported && extractors[i].notesIfUnsupported)
+      unsupported.push(extractors[i].notesIfUnsupported);
+  }
+  if (unsupported.length > 0) {
+    message.push('--');
+    message.push(...unsupported);
+  }
+
   message.push('--');
   message.push('Supported mime types:');
   for (let i = 0; i < extractors.length; ++i) {
     if (extractors[i].supported)
-      message.push(...extractors[i].mimes.map(x => ' * ' + x));
+      message.push(...extractors[i].mimes.map(x => '* ' + x));
   }
   message.push('--');
   message.push('Supported extensions:');
   for (let i = 0; i < extractors.length; ++i) {
     if (extractors[i].supported)
-      message.push(...extractors[i].extensions.map(x => ' * ' + x));
+      message.push(...extractors[i].extensions.map(x => '* ' + x));
   }
 
   statusUpdater.setError(message);
