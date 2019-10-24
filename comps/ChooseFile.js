@@ -51,7 +51,8 @@ export default function ChooseFile(props) {
     <div style={compStyle}>
       <div {...getRootProps()}
           className={"dropZone" + (isDragActive ? "  dragActive" : "") +
-                                  (props.inputFile ? " fileSelected" : "")}>
+                                  (props.inputFile ? " fileSelected" : "") +
+                                  (props.isSupported ? " isSupported" : "")}>
         <input {...getInputProps()}/>
         {dropZoneContents}
       </div>
@@ -71,6 +72,8 @@ export default function ChooseFile(props) {
           border: none;
           min-height: 46px;
           padding-top: 25px;
+        }
+        .dropZone.fileSelected.isSupported {
           background-color: #aaddaf;
         }
         .dropZone.dragActive {

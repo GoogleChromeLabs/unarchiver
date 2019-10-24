@@ -44,7 +44,11 @@ const extractors = [
   },
 ];
 
-function findExtractor(mime, filename) {
+function findExtractor(inputFile) {
+  if (!inputFile)
+    return null;
+
+  let mime = inputFile.type;
   for (let i = 0; i < extractors.length; ++i) {
     let extractor = extractors[i];
     if (extractor.mimes.indexOf(mime) >= 0) {
@@ -53,6 +57,7 @@ function findExtractor(mime, filename) {
     }
   }
 
+  let filename = inputFile.name;
   for (let i = 0; i < extractors.length; ++i) {
     let extractor = extractors[i];
     for (let j = 0; j < extractor.extensions.length; ++j) {
@@ -98,7 +103,7 @@ function showUnsupportedError(mime, filename, statusUpdater) {
 }
 
 async function extract(props) {
-  let ex = findExtractor(props.inputFile.type, props.inputFile.name);
+  let ex = findExtractor(props.inputFile);
   if (!ex) {
     showUnsupportedError(props.inputFile.type, props.inputFile.name, props.statusUpdater);
     return;
@@ -156,7 +161,7 @@ function Index() {
     console.log(inputFile);
     setFiles([]);
 
-    let ex = findExtractor(inputFile.type, inputFile.name);
+    let ex = findExtractor(inputFile);
     if (!ex) {
       showUnsupportedError(inputFile.type, inputFile.name, statusUpdater(setStatus));
       return;
@@ -181,7 +186,8 @@ function Index() {
       <div>
         <ChooseFile
             inputFile={inputFile}
-            setChosenFile={setInputFileInterceptor} />
+            setChosenFile={setInputFileInterceptor}
+            isSupported={!!findExtractor(inputFile)} />
         <ChooseDirectory
             chosenDirectory={outputDirectory}
             setChosenDirectory={setOutputDirectory} />
