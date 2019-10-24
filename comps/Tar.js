@@ -1,7 +1,7 @@
 import {extract} from "tar-stream"
 import CreateDirectories from "./FileUtil.js"
 
-export async function Untar(file_stream, output_dir) {
+export async function untar(file_stream, output_dir) {
   var extractObj = extract();
   extractObj.on('entry', async function(header, stream, next) {
     const [directory, file_name] = await CreateDirectories(output_dir, header.name);

@@ -1,7 +1,7 @@
 import CreateDirectories from "./FileUtil.js"
 import JSZip from "jszip"
 
-export async function enumerateFiles(inputFile) {
+export async function enumerateZip(inputFile) {
   const zip = await JSZip.loadAsync(inputFile);
   let files = []; 
   for (const name in zip.files) {

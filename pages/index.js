@@ -2,9 +2,9 @@ import Layout from '../comps/Layout.js'
 import ChooseFile from '../comps/ChooseFile.js'
 import ChooseDirectory from '../comps/ChooseDirectory.js'
 import {useState, useCallback} from 'react';
-import {unzip, enumerateFiles} from '../comps/Zip.js';
-import {Untar} from '../comps/Tar.js';
-import { Line } from 'rc-progress';
+import {unzip, enumerateZip} from '../comps/Zip.js';
+import {untar} from '../comps/Tar.js';
+import {Line} from 'rc-progress';
 import {StatusBox, statusUpdater, resultState} from '../comps/StatusBox.js'
 
 const extractors = [
@@ -12,13 +12,13 @@ const extractors = [
     mimes: ['application/zip'],
     extensions: ['.zip'],
     extract: (props) => unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater),
-    enumerateFiles: async (inputFile) => enumerateFiles(inputFile),
+    enumerateFiles: async (inputFile) => enumerateZip(inputFile),
     supported: true,
   },
   {
     mimes: ['application/x-tar'],
     extensions: ['.tar'],
-    extract: (props) => Untar(props.inputFile.stream(), props.outputDirectory),
+    extract: (props) => untar(props.inputFile.stream(), props.outputDirectory),
     enumerateFiles: async (inputFile) => [],
     supported: true,
   },
@@ -28,7 +28,7 @@ const extractors = [
     extract: (props) => {
       const input = props.inputFile.stream();
       const decompressor = new DecompressionStream("gzip");
-      Untar(input.pipeThrough(decompressor), props.outputDirectory);
+      untar(input.pipeThrough(decompressor), props.outputDirectory);
     },
     enumerateFiles: async (inputFile) => [],
     supported: (() => (typeof DecompressionStream !== 'undefined'))(),
