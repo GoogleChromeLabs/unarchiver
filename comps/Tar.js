@@ -1,54 +1,58 @@
 import {extract} from "tar-stream"
 import CreateDirectories from "./FileUtil.js"
 
-export function Untar(file, output_dir) {
-  return new Promise((resolve, reject) => {
-    var extractObj = extract();
-    extractObj.on('entry', async function(header, stream, next) {
-      console.log("Got tar entry with headers", header);
-      // stream is the content body (might be an empty stream)
-      // call next when you are done with this entry
-      const [directory, file_name] = await CreateDirectories(output_dir, output_file)
+export async function Untar(file, output_dir) {
+  var extractObj = extract();
+  extractObj.on('entry', async function(header, stream, next) {
 
-      // Skip over everything but files.
-      // TODO handle symlinks
-      if (header.type =! "file") {
-        stream.resume();
-        next();
-        return;
-      }
+    const [directory, file_name] = await CreateDirectories(output_dir, header.name);
 
-      const output_file = await directory.getFile(file_name, {create: true});
-      console.log('Created file ' + file_name);
+    // Skip over everything but files.
+    // TODO handle symlinks
+    if (header.type =! "file") {
+      stream.resume();
+      next();
+      return;
+    }
 
-      const writer = await output_file.createWriter({keepExistingData: false});
-      let offset = 0;
-      let write_op;
-      stream.on('end', function() {
-        next() // ready for next entry
-      })
-      stream.on('data', async (chunk) => {
-        stream.pause();
-        console.log(`Writing ${chunk.length} bytes of data.`);
-        write_op = writer.write(offset, chunk);
-        await write_op;
-        offset += chunk.length;
-        stream.resume();
-      });
-      
-      await new Promise((resolve, reject) => {
-        stream.on('error', reject);
-        stream.on('end', resolve);
-      });
-      // Make sure the last write operation actually finished.
+    const output_file = await directory.getFile(file_name, {create: true});
+
+    const writer = await output_file.createWriter({keepExistingData: false});
+    let offset = 0;
+    let write_op;
+    stream.on('end', function() {
+      next() // ready for next entry
+    })
+    stream.on('data', async (chunk) => {
+      stream.pause();
+      console.log(`Writing ${chunk.length} bytes of data.`);
+      write_op = writer.write(offset, chunk);
       await write_op;
-      writer.close();
+      offset += chunk.length;
+      stream.resume();
     });
 
-    extractObj.on('finish', function() {
-      console.log("finished processing tar");
+    await new Promise((resolve, reject) => {
+      stream.on('error', reject);
+      stream.on('end', resolve);
     });
+    // Make sure the last write operation actually finished.
+    await write_op;
+    writer.close();
+  });
 
-    pack.pipe(extract)
-  })
+  extractObj.on('finish', function() {
+    console.log("finished processing tar");
+  });
+
+  // Read the file.
+  const reader = file.stream().getReader();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done)
+      break;
+    extractObj.write(value);
+  }
+  extractObj.end();
+  reader.releaseLock();
 }
