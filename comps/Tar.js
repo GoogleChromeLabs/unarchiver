@@ -9,7 +9,7 @@ export async function Untar(file, output_dir) {
 
     // Skip over everything but files.
     // TODO handle symlinks
-    if (header.type =! "file") {
+    if (header.type != "file") {
       stream.resume();
       next();
       return;
