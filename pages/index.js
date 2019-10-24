@@ -7,19 +7,19 @@ import {Untar} from '../comps/Tar.js';
 import { Line } from 'rc-progress';
 import {StatusBox, statusUpdater, resultState} from '../comps/StatusBox.js'
 
-// TODO(enne): add a "supported" function here and feature detect
-// DecompressionStream.
 const extractors = [
   {
     mimes: ['application/zip'],
     extensions: ['.zip'],
     func: (props) => unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater),
+    enumerateFiles: async (inputFile) => enumerateFiles(inputFile),
     supported: true,
   },
   {
     mimes: ['application/x-tar'],
     extensions: ['.tar'],
     func: (props) => Untar(props.inputFile.stream(), props.outputDirectory),
+    enumerateFiles: async (inputFile) => [],
     supported: true,
   },
   {
@@ -30,6 +30,7 @@ const extractors = [
       const decompressor = new DecompressionStream("gzip");
       Untar(input.pipeThrough(decompressor), props.outputDirectory);
     },
+    enumerateFiles: async (inputFile) => [],
     supported: (() => (typeof DecompressionStream !== 'undefined'))(),
   },
 ];
@@ -136,13 +137,14 @@ function Index() {
     console.log(inputFile);
     setFiles([]);
 
-    if (!findExtractor(inputFile.type, inputFile.name)) {
+    let ex = findExtractor(inputFile.type, inputFile.name);
+    if (!ex) {
       showUnsupportedError(inputFile.type, inputFile.name, statusUpdater(setStatus));
       return;
     }
 
-    if (inputFile != null && inputFile.type == "application/zip") {
-      let enumerated = await enumerateFiles(inputFile);
+    if (inputFile != null) {
+      let enumerated = await ex.enumerateFiles(inputFile);
       setFiles(enumerated);
     }
     setStatus({state: resultState.UNKNOWN, message: null});
