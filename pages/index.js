@@ -22,6 +22,19 @@ function Unarchive(props) {
   )
 }
 
+function filePreview(files) {
+  if (files === null || files.length === 0)
+    return null;
+  return (
+    <div>
+      Files to extract:
+      <ul>
+        { files.map((file, i) => <li key={i}>{file}</li>) }
+      </ul>
+    </div>
+  )
+}
+
 function Index() {
   // Declare a state variable for the input file.
   const [inputFile, setInputFile] = useState(null);
@@ -40,12 +53,10 @@ function Index() {
   var setInputFileInterceptor = useCallback(async (inputFile) => {
     setInputFile(inputFile);
     console.log(inputFile);
+    setFiles([]);
     if (inputFile != null) {
       let enumerated = await enumerateFiles(inputFile);
       setFiles(enumerated);
-    }
-    else {
-      setFiles([]);
     }
     setStatus({state: resultState.UNKNOWN, message: null});
     console.log("set files");
@@ -77,14 +88,7 @@ function Index() {
             <Line percent={progress} strokeWidth="1" />
             : ''
         }
-        { files != null && files.length != 0 && (
-          <div>
-            Files to extract:
-            <ul>
-              { files.map((file, i) => <li key={i}>{file}</li>) }
-            </ul>
-          </div>
-        )}
+        { filePreview(files) }
         <StatusBox
             resultStatus={resultStatus.state}
             message={resultStatus.message} />
