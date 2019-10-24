@@ -30,6 +30,7 @@ export function StatusBox(props) {
       #statusBox div {
         display: flex;
         flex-direction: row;
+        min-height: 15px;
       }
       `}</style>
     </div>

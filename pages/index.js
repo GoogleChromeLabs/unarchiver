@@ -77,21 +77,21 @@ function showUnsupportedError(mime, filename, statusUpdater) {
       unsupported.push(extractors[i].notesIfUnsupported);
   }
   if (unsupported.length > 0) {
-    message.push('--');
+    message.push('');
     message.push(...unsupported);
   }
 
-  message.push('--');
+  message.push('');
   message.push('Supported mime types:');
   for (let i = 0; i < extractors.length; ++i) {
     if (extractors[i].supported)
-      message.push(...extractors[i].mimes.map(x => '* ' + x));
+      message.push(...extractors[i].mimes.map(x => <li>{x}</li>));
   }
-  message.push('--');
+  message.push('');
   message.push('Supported extensions:');
   for (let i = 0; i < extractors.length; ++i) {
     if (extractors[i].supported)
-      message.push(...extractors[i].extensions.map(x => '* ' + x));
+      message.push(...extractors[i].extensions.map(x => <li>{x}</li>));
   }
 
   statusUpdater.setError(message);
