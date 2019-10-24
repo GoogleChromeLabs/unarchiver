@@ -7,6 +7,61 @@ import {Untar} from '../comps/Tar.js';
 import { Line } from 'rc-progress';
 import {StatusBox, statusUpdater, resultState} from '../comps/StatusBox.js'
 
+// TODO(enne): add a "supported" function here and feature detect
+// DecompressionStream.
+const extractors = [
+  {
+    mimes: ['application/zip'],
+    extensions: ['.zip'],
+    func: (props) => unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater),
+  },
+  {
+    mimes: ['application/x-tar'],
+    extensions: ['.tar'],
+    func: (props) => Untar(props.inputFile.stream(), props.outputDirectory),
+  },
+  {
+    mimes: [],
+    extensions: ['.tgz', '.tar.gz'],
+    func: (props) => {
+      const input = props.inputFile.stream();
+      const decompressor = new DecompressionStream("gzip");
+      Untar(input.pipeThrough(decompressor), props.outputDirectory);
+    },
+  },
+];
+
+function findExtractor(mime, filename) {
+  for (let i = 0; i < extractors.length; ++i) {
+    let extractor = extractors[i];
+    if (extractor.mimes.indexOf(mime) >= 0) {
+      return extractor;
+    }
+  }
+
+  for (let i = 0; i < extractors.length; ++i) {
+    let extractor = extractors[i];
+    for (let j = 0; j < extractor.extensions.length; ++j) {
+      let extension = extractor.extensions[j];
+      if (filename.endsWith(extension)) {
+        return extractor;
+      }
+    }
+  }
+  return null;
+}
+
+async function extract(props) {
+  let ex = findExtractor(props.inputFile.type, props.inputFile.name);
+  if (!ex) {
+    // TODO: make this better
+    props.statusUpdater.setError('no extractor found');
+    return;
+  }
+  ex.func(props);
+}
+
+
 function Unarchive(props) {
   return (
     <div style={{margin: 10}}>
@@ -14,15 +69,7 @@ function Unarchive(props) {
         async () => {
           props.setRunning(true);
           props.statusUpdater.clearStatus();
-          if (props.inputFile.type == "application/zip") {
-            await unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater);
-          } else if (props.inputFile.type == "application/x-tar") {
-            await Untar(props.inputFile.stream(), props.outputDirectory);
-          } else if (props.inputFile.name.endsWith(".tgz") || props.inputFile.name.endsWith(".tar.gz")) {
-            const input = props.inputFile.stream();
-            const decompressor = new DecompressionStream("gzip");
-            await Untar(input.pipeThrough(decompressor), props.outputDirectory);
-          }
+          await extract(props);
           props.setRunning(false);
           props.reset();
         }
