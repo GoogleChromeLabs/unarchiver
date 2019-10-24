@@ -14,11 +14,13 @@ const extractors = [
     mimes: ['application/zip'],
     extensions: ['.zip'],
     func: (props) => unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater),
+    supported: true,
   },
   {
     mimes: ['application/x-tar'],
     extensions: ['.tar'],
     func: (props) => Untar(props.inputFile.stream(), props.outputDirectory),
+    supported: true,
   },
   {
     mimes: [],
@@ -28,6 +30,7 @@ const extractors = [
       const decompressor = new DecompressionStream("gzip");
       Untar(input.pipeThrough(decompressor), props.outputDirectory);
     },
+    supported: (() => (typeof DecompressionStream !== 'undefined'))(),
   },
 ];
 
@@ -35,7 +38,8 @@ function findExtractor(mime, filename) {
   for (let i = 0; i < extractors.length; ++i) {
     let extractor = extractors[i];
     if (extractor.mimes.indexOf(mime) >= 0) {
-      return extractor;
+      if (extractor.supported)
+        return extractor;
     }
   }
 
@@ -44,7 +48,8 @@ function findExtractor(mime, filename) {
     for (let j = 0; j < extractor.extensions.length; ++j) {
       let extension = extractor.extensions[j];
       if (filename.endsWith(extension)) {
-        return extractor;
+        if (extractor.supported)
+          return extractor;
       }
     }
   }
