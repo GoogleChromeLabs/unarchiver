@@ -1,10 +1,9 @@
 import {extract} from "tar-stream"
 import CreateDirectories from "./FileUtil.js"
 
-export async function Untar(file, output_dir) {
+export async function Untar(file_stream, output_dir) {
   var extractObj = extract();
   extractObj.on('entry', async function(header, stream, next) {
-
     const [directory, file_name] = await CreateDirectories(output_dir, header.name);
 
     // Skip over everything but files.
@@ -46,7 +45,7 @@ export async function Untar(file, output_dir) {
   });
 
   // Read the file.
-  const reader = file.stream().getReader();
+  const reader = file_stream.getReader();
   while (true) {
     const { done, value } = await reader.read();
     if (done)

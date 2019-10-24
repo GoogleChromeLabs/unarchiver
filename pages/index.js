@@ -17,7 +17,11 @@ function Unarchive(props) {
           if (props.inputFile.type == "application/zip") {
             await unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater);
           } else if (props.inputFile.type == "application/x-tar") {
-            await Untar(props.inputFile, props.outputDirectory);
+            await Untar(props.inputFile.stream(), props.outputDirectory);
+          } else if (props.inputFile.name.endsWith(".tgz") || props.inputFile.name.endsWith(".tar.gz")) {
+            const input = props.inputFile.stream();
+            const decompressor = new DecompressionStream("gzip");
+            await Untar(input.pipeThrough(decompressor), props.outputDirectory);
           }
           props.setRunning(false);
           props.reset();
