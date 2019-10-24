@@ -15,12 +15,16 @@ export default function ChooseFile(props) {
       useDropzone({multiple: false, onDrop});
 
   // The contents of the drop zone changes based on if a file is selected or
-  // not.
+  // not.  props.inputFile is null if no file has been selected.
+  // Because |multiple| is set to false above, props.inputFile is undefined
+  // if multiple files are dropped.
   let dropZoneContents;
-  if (props.inputFile === null) {
+  if (!props.inputFile) {
+    // It'd be nice to maybe set the status box here, but that creates an
+    // infinite loop of updating effects? Instead, just change the text.
     dropZoneContents =
         <div>
-          First, drop the compressed file here!
+          First, drop the {props.inputFile === undefined ? '(single) ' : ''} compressed file here!
           <div style={{fontSize: 18, textDecoration: 'underline'}}>(or click here to manually select)</div>
         </div>;
   } else {
@@ -47,7 +51,7 @@ export default function ChooseFile(props) {
     <div style={compStyle}>
       <div {...getRootProps()}
           className={"dropZone" + (isDragActive ? "  dragActive" : "") +
-                                  (props.inputFile !== null ? " fileSelected" : "")}>
+                                  (props.inputFile ? " fileSelected" : "")}>
         <input {...getInputProps()}/>
         {dropZoneContents}
       </div>
