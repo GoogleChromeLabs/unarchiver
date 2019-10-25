@@ -23,6 +23,10 @@ const sleepFinalTimeMs = 400;
 
 export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdater) {
   try {
+    // |progress| tracks the current progress indicator value.
+    let progress = 0;
+    setProgress(progress);
+
     const zip = await JSZip.loadAsync(inputFile);
 
     // Uncomment to use the user-selected directory handle:
@@ -34,8 +38,35 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
       return;
     }
 
-    // |progress| tracks the current progress indicator value.
-    let progress = 0;
+    // Run through each entry first to test if the file already exists.
+    // This ensures that we only begin unarchiving if all files in the
+    // archive didn't already exist on disk.
+    for (const name in zip.files) {
+      const [dir, file_name] = await CreateDirectories(output_dir, name)
+      const file = zip.files[name];
+
+      // Skip over directories
+      if (file.dir) continue;
+
+      // Try to get |file_name| in |dir|.  If this doesn't reject,
+      // then |file_name| exists.
+      let exists;
+      try {
+        await dir.getFile(file_name, {create: false});
+        exists = true;
+      } catch(e) {
+        // Continue.
+        exists = false;
+      }
+
+      if (exists) {
+        statusUpdater.setError('Error: Could not extract ' + file_name + '.  File already exists.');
+        // TODO: Throw an error here and handle rejected async calls
+        // in callers.
+        // throw new Error(`file ${file_name} already exists`);
+        return;
+      }
+    }
 
     // |progress_step| is the amount of progress we increment by on the
     // progress indicator.  There are progress indicator steps for each entry
@@ -54,25 +85,6 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
 
       // Skip over directories
       if (file.dir) continue;
-
-      // Try to get |file_name| in |dir|.  If this doesn't reject,
-      // then |file_name| exists.
-      let exists;
-      try {
-        const output_file = await dir.getFile(file_name, {create: false});
-        exists = true;
-      } catch(e) {
-        // Continue.
-        exists = false;
-      }
-
-      if (exists) {
-        statusUpdater.setError('Error: Could not extract ' + file_name + '.  File already exists.');
-        // TODO: Throw an error here and handle rejected async calls
-        // in callers.
-        // throw new Error(`file ${file_name} already exists`);
-        return;
-      }
 
       const output_file = await dir.getFile(file_name, {create: true});
       const writer = await output_file.createWriter({keepExistingData: false});
