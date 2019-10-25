@@ -119,7 +119,7 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
 
     let plural_files = num_files > 1 ? 'files' : 'file';
     let message = 'Extracted ' + num_files + ' ' + plural_files +
-        ' from ' + inputFile.path + '.';
+        ' from ' + inputFile.name + '.';
     statusUpdater.setSuccess(message);
 
     await sleep(sleepFinalTimeMs);
