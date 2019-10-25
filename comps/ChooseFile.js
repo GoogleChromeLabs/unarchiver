@@ -32,7 +32,7 @@ export default function ChooseFile(props) {
         <div>Extracting from: <span style={{fontFamily: 'monospace'}}>{props.inputFile.name}</span></div>;
   }
 
-  useEffect(() => {
+  useEffect(async () => {
       if (!window.launchParams ||
           !window.launchParams.files ||
           !window.launchParams.files.length) {
@@ -43,7 +43,7 @@ export default function ChooseFile(props) {
         for (let file of window.launchParams.files)
             files.push(await file.getFile());
       }
-      getFiles();
+      await getFiles();
       onDrop(files);
   }, []);
 
