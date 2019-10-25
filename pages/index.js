@@ -108,7 +108,7 @@ async function extract(props) {
     showUnsupportedError(props.inputFile.type, props.inputFile.name, props.statusUpdater);
     return;
   }
-  ex.extract(props);
+  await ex.extract(props);
 }
 
 
