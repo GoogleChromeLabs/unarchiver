@@ -55,6 +55,25 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
       // Skip over directories
       if (file.dir) continue;
 
+      // Try to get |file_name| in |dir|.  If this doesn't reject,
+      // then |file_name| exists.
+      let exists;
+      try {
+        const output_file = await dir.getFile(file_name, {create: false});
+        exists = true;
+      } catch(e) {
+        // Continue.
+        exists = false;
+      }
+
+      if (exists) {
+        statusUpdater.setError('Error: Could not extract ' + file_name + '.  File already exists.');
+        // TODO: Throw an error here and handle rejected async calls
+        // in callers.
+        // throw new Error(`file ${file_name} already exists`);
+        return;
+      }
+
       const output_file = await dir.getFile(file_name, {create: true});
       const writer = await output_file.createWriter({keepExistingData: false});
 
