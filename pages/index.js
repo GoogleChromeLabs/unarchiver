@@ -11,15 +11,15 @@ const extractors = [
   {
     mimes: ['application/zip'],
     extensions: ['.zip'],
-    extract: (props) => unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater),
-    enumerateFiles: async (inputFile) => enumerateZip(inputFile),
+    extract: async (props) => await unzip(props.inputFile, props.outputDirectory, props.setProgress, props.statusUpdater),
+    enumerateFiles: async (inputFile) => await enumerateZip(inputFile),
     supported: true,
     notesIfUnsupported: '',
   },
   {
     mimes: ['application/x-tar'],
     extensions: ['.tar'],
-    extract: (props) => untar(props.inputFile.stream(), props.outputDirectory),
+    extract: async (props) => await untar(props.inputFile.stream(), props.outputDirectory),
     enumerateFiles: async (inputFile) => [],
     supported: true,
     notesIfUnsupported: '',
@@ -27,10 +27,10 @@ const extractors = [
   {
     mimes: [],
     extensions: ['.tgz', '.tar.gz'],
-    extract: (props) => {
+    extract: async (props) => {
       const input = props.inputFile.stream();
       const decompressor = new DecompressionStream("gzip");
-      untar(input.pipeThrough(decompressor), props.outputDirectory);
+      await untar(input.pipeThrough(decompressor), props.outputDirectory);
     },
     enumerateFiles: async (inputFile) => [],
     supported: (() => (typeof DecompressionStream !== 'undefined'))(),
