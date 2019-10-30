@@ -109,8 +109,6 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
     let message = 'Extracted ' + num_files + ' ' + plural_files +
         ' from ' + inputFile.name + '.';
     statusUpdater.setSuccess(message);
-
-    await sleep(sleepFinalTimeMs);
   } catch (error) {
     console.error('Failed to load zip file');
     console.error(error);
