@@ -101,7 +101,6 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
       writer.close();
     };
 
-    await sleep(sleepTimeMs);
     progress += progress_step;
     setProgress(progress);
 
