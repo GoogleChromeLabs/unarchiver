@@ -1,4 +1,4 @@
-import {useCallback, useState, useEffect} from 'react';
+import {useCallback, useEffect} from 'react';
 import {useDropzone} from 'react-dropzone';
 
 const compStyle = {
@@ -32,7 +32,8 @@ export default function ChooseFile(props) {
         <div>Extracting from: <span style={{fontFamily: 'monospace'}}>{props.inputFile.name}</span></div>;
   }
 
-  useEffect(async () => {
+  useEffect(() => {
+    async function handleDrop() {
       if (!window.launchParams ||
           !window.launchParams.files ||
           !window.launchParams.files.length) {
@@ -41,10 +42,12 @@ export default function ChooseFile(props) {
       let files = [];
       async function getFiles() {
         for (let file of window.launchParams.files)
-            files.push(await file.getFile());
+          files.push(await file.getFile());
       }
       await getFiles();
       onDrop(files);
+    }
+    handleDrop();
   }, []);
 
   return (
