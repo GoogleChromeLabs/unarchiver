@@ -11,16 +11,6 @@ export async function enumerateZip(inputFile) {
   return files;
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-// |sleepTimeMs| is the amount of time in ms to sleep between step updates.
-const sleepTimeMs = 200;
-
-// |sleepFinalTimeMs| is the amount of time in ms to sleep on the final step.
-const sleepFinalTimeMs = 400;
-
 export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdater) {
   try {
     // |progress| tracks the current progress indicator value.
@@ -76,10 +66,8 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
     let progress_step = 100 / (num_files + 1);
 
     for (const name in zip.files) {
-      await sleep(sleepTimeMs);
       progress += progress_step;
       setProgress(progress);
-      await sleep(sleepTimeMs);
       const [dir, file_name] = await CreateDirectories(output_dir, name)
       const file = zip.files[name];
 
