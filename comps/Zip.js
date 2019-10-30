@@ -1,5 +1,6 @@
 import CreateDirectories from "./FileUtil.js"
 import JSZip from "jszip"
+import PrettyMs from "pretty-ms";
 
 export async function enumerateZip(inputFile) {
   const zip = await JSZip.loadAsync(inputFile);
@@ -13,6 +14,8 @@ export async function enumerateZip(inputFile) {
 
 export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdater) {
   try {
+    let start_ms = Date.now();
+
     // |progress| tracks the current progress indicator value.
     let progress = 0;
     setProgress(progress);
@@ -105,8 +108,8 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
     setProgress(progress);
 
     let plural_files = num_files > 1 ? 'files' : 'file';
-    let message = 'Extracted ' + num_files + ' ' + plural_files +
-        ' from ' + inputFile.name + '.';
+    let message = `Extracted ${num_files} ${plural_files} from ` +
+        `${inputFile.name} in ${PrettyMs(Date.now() - start_ms)}.`;
     statusUpdater.setSuccess(message);
   } catch (error) {
     console.error('Failed to load zip file');
