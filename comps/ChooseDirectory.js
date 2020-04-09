@@ -16,7 +16,7 @@ import {useState, useCallback} from 'react';
 
 async function promptUserForDirectory(setDirectory) {
   try {
-    const handle = await window.chooseFileSystemEntries({type: 'openDirectory'});
+    const handle = await window.chooseFileSystemEntries({type: 'open-directory'});
     setDirectory(handle);
   } catch (e) {
     console.log(`ERROR: ${JSON.stringify(e.message)}`);
