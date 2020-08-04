@@ -56,7 +56,7 @@ export default function ChooseFile(props) {
       let files = [];
       async function getFiles() {
         for (let file of window.launchParams.files)
-          files.push(await file.getFile());
+          files.push('getFile' in file ? await file.getFile() : await file.getFileHandle());
       }
       await getFiles();
       onDrop(files);

@@ -13,15 +13,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fs-extra": "^8.1.0",
-    "jszip": "^3.2.2",
-    "next": "^9.3.2",
-    "next-offline": "^4.0.6",
-    "pretty-ms": "^5.0.0",
-    "rc-progress": "^2.5.2",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-dropzone": "^10.1.10",
-    "tar-stream": "^2.1.0"
+    "fs-extra": "^9.0.1",
+    "jszip": "3.2.2",
+    "next": "^9.5.1",
+    "next-offline": "^5.0.2",
+    "pretty-ms": "^7.0.0",
+    "rc-progress": "^3.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-dropzone": "^11.0.2",
+    "tar-stream": "^2.1.3"
   }
 }

@@ -23,7 +23,7 @@ const layoutStyle = {
 export default function Layout(props) {
   // Feature detection.
   // For server-side rendering, window is not defined.
-  if (typeof window !== 'undefined' && !('chooseFileSystemEntries' in window)) {
+  if (typeof window !== 'undefined' && !('showOpenFilePicker' in window || 'chooseFileSystemEntries' in window)) {
     let chromeLink = '';
     if (window.chrome) {
       chromeLink = (

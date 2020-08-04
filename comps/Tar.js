@@ -28,9 +28,9 @@ export async function untar(file_stream, output_dir) {
       return;
     }
 
-    const output_file = await directory.getFile(file_name, {create: true});
+    const output_file = 'getFile' in directory ? await directory.getFile(file_name, {create: true}) : await directory.getFileHandle(file_name, {create: true});
 
-    const writer = await output_file.createWriter({keepExistingData: false});
+    const writer = await output_file.createWritable({keepExistingData: false});
     let offset = 0;
     let write_op;
     stream.on('end', function() {

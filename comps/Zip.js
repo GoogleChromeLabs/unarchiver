@@ -18,7 +18,7 @@ import PrettyMs from "pretty-ms";
 
 export async function enumerateZip(inputFile) {
   const zip = await JSZip.loadAsync(inputFile);
-  let files = []; 
+  let files = [];
   for (const name in zip.files) {
     files.push(name);
   }
@@ -59,7 +59,7 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
       // then |file_name| exists.
       let exists;
       try {
-        await dir.getFile(file_name, {create: false});
+        'getFile' in dir ? await dir.getFile(file_name, {create: false}) : await dir.getFileHandle(file_name, {create: false});
         exists = true;
       } catch(e) {
         // Continue.
@@ -91,8 +91,8 @@ export async function unzip(inputFile, outputDirHandle, setProgress, statusUpdat
       // Skip over directories
       if (file.dir) continue;
 
-      const output_file = await dir.getFile(file_name, {create: true});
-      const writer = await output_file.createWriter({keepExistingData: false});
+      const output_file = 'getFile' in dir ? await dir.getFile(file_name, {create: true}) : await dir.getFileHandle(file_name, {create: true});
+      const writer = await output_file.createWritable({keepExistingData: false});
 
       const stream = file.nodeStream();
       // Too bad stream is not a native stream, but instead a node stream
