@@ -15,7 +15,7 @@
   "dependencies": {
     "fs-extra": "^9.0.1",
     "jszip": "3.2.2",
-    "next": "^9.5.4",
+    "next": "^13.5.4",
     "next-offline": "^5.0.2",
     "pretty-ms": "^7.0.0",
     "rc-progress": "^3.0.0",
